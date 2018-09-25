@@ -7,7 +7,6 @@ public class PlayerCharacter : MonoBehaviour {
     private Rigidbody2D myRigidBody;
     [SerializeField]
     private float speed;
-    [SerializeField]
     private float direction;
     [SerializeField]
     private float jumpCooldown;
@@ -19,25 +18,22 @@ public class PlayerCharacter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        GetMovementInput();
         if (Input.GetKey(KeyCode.D))
         {
-            direction = 1;
+            //direction = 1;
             Move();
             //move character to the right
             //myRigidBody.velocity = new Vector2(speed, 0);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            direction = -1;
+            //direction = -1;
             Move();
         }
         if (Input.GetKey(KeyCode.Space)&&jumpCooldown==0)
         {
             Jump();
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            myRigidBody.velocity = new Vector2(0,-speed);
         }
         if (jumpCooldown > 0)
         {
@@ -46,6 +42,10 @@ public class PlayerCharacter : MonoBehaviour {
         //Syntax for printing to console
         //Debug.Log("Test!");
 	}
+    private void GetMovementInput()
+    {
+       direction = Input.GetAxis("Horizontal");
+    }
     private void Move()
     {
         myRigidBody.velocity = new Vector2(speed*direction, myRigidBody.velocity.y);
@@ -54,7 +54,7 @@ public class PlayerCharacter : MonoBehaviour {
     private void Jump()
     {
         myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, speed*3);
-        jumpCooldown = 105;
+        jumpCooldown = 106;
     }
     
 }
