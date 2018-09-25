@@ -14,7 +14,19 @@ public class PlayerCharacter : MonoBehaviour {
         if (Input.GetKey(KeyCode.D))
         {
             //move character to the right
-            myRigidBody.velocity = new Vector2(3, 0);
+            myRigidBody.velocity = new Vector2(2, 0);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            myRigidBody.velocity = new Vector2(-2,0);
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            myRigidBody.velocity = new Vector2(0,2);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            myRigidBody.velocity = new Vector2(0,-2);
         }
         //Syntax for printing to console
         //Debug.Log("Test!");
