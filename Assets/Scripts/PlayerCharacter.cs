@@ -14,22 +14,30 @@ public class PlayerCharacter : MonoBehaviour {
     private float jumpOneModifier;
     [SerializeField]
     private float jumpTwoModifier;
+    [SerializeField]
+    private float speedJumpDivider;
+    [SerializeField]
+    private PhysicsMaterial2D playerMovingPhysicsMaterial, playerStoppingPhysicsMaterial;
     // Use this for initialization
 
     [SerializeField]
     private int jumpNumber;
 	void Start () {
         //Debug.Log("This is Start");
-        speed = 3;
+        //speed = 0;
         jumpNumber = 0;
         jumpCooldown = 0;
-        jumpOneModifier = 9;
-        jumpTwoModifier = 7;
+        //jumpOneModifier = 9;
+       // jumpTwoModifier = 7;
 	}
 	
 	// Update is called once per frame
 	void Update () {
         GetMovementInput();
+        if (jumpNumber > 0)
+        {
+            speedJumpDivider = 2;
+        }
         if (Input.GetKey(KeyCode.D))
         {
             //direction = 1;
@@ -54,6 +62,10 @@ public class PlayerCharacter : MonoBehaviour {
         {
             jumpNumber = 0;
         }
+        if (jumpNumber == 0)
+        {
+            speedJumpDivider = 1;
+        }
         //Syntax for printing to console
         //Debug.Log("Test!");
     }
@@ -63,7 +75,7 @@ public class PlayerCharacter : MonoBehaviour {
     }
     private void Move()
     {
-        myRigidBody.velocity = new Vector2(speed*direction, myRigidBody.velocity.y);
+        myRigidBody.velocity = new Vector2((speed*direction)/speedJumpDivider, myRigidBody.velocity.y);
         //transform.Translate(speed, 0, 0);
     }
     private void Jump()
