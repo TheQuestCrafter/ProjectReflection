@@ -85,7 +85,7 @@ public class PlayerCharacter : MonoBehaviour {
 
     private void Move()
     {
-        myRigidBody.AddForce(Vector2.right*direction*acceleration);
+        myRigidBody.AddForce(Vector2.right*direction*acceleration/speedJumpReducer);
         Vector2 clampedVelocity = myRigidBody.velocity;
         clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed/speedJumpReducer, maxSpeed/speedJumpReducer);
         myRigidBody.velocity = clampedVelocity;
