@@ -309,7 +309,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c389082a47b9fe944918820fc7ca66f6, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -409,10 +409,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myRigidBody: {fileID: 351094345}
-  speed: 3
+  speed: 7
   jumpCooldown: 0
   jumpOneModifier: 9
   jumpTwoModifier: 7
+  speedJumpDivider: 0
+  playerMovingPhysicsMaterial: {fileID: 6200000, guid: c389082a47b9fe944918820fc7ca66f6,
+    type: 2}
+  playerStoppingPhysicsMaterial: {fileID: 6200000, guid: 97b9ee833589efb47a747160c7952f9f,
+    type: 2}
+  playerGroundCollider: {fileID: 351094348}
   jumpNumber: 0
 --- !u!114 &351094350
 MonoBehaviour:

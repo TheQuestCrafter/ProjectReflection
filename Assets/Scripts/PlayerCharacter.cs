@@ -6,7 +6,7 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private Rigidbody2D myRigidBody;
     [SerializeField]
-    private float speed;
+    private float acceleration;
     private float direction;
     [SerializeField]
     private float jumpCooldown;
@@ -15,20 +15,21 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private float jumpTwoModifier;
     [SerializeField]
-    private float speedJumpDivider;
+    private float speedJumpReducer;
     [SerializeField]
     private PhysicsMaterial2D playerMovingPhysicsMaterial, playerStoppingPhysicsMaterial;
+    [SerializeField]
+    private Collider2D playerGroundCollider;
+    [SerializeField]
+    private float maxSpeed=5;
     // Use this for initialization
 
     [SerializeField]
     private int jumpNumber;
 	void Start () {
-        //Debug.Log("This is Start");
-        //speed = 0;
         jumpNumber = 0;
         jumpCooldown = 0;
-        //jumpOneModifier = 9;
-       // jumpTwoModifier = 7;
+
 	}
 	
 	// Update is called once per frame
@@ -36,19 +37,7 @@ public class PlayerCharacter : MonoBehaviour {
         GetMovementInput();
         if (jumpNumber > 0)
         {
-            speedJumpDivider = 2;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            //direction = 1;
-            Move();
-            //move character to the right
-            //myRigidBody.velocity = new Vector2(speed, 0);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            //direction = -1;
-            Move();
+            speedJumpReducer = 2;
         }
         if (Input.GetKey(KeyCode.Space)&&jumpCooldown==0)
         {
@@ -64,20 +53,44 @@ public class PlayerCharacter : MonoBehaviour {
         }
         if (jumpNumber == 0)
         {
-            speedJumpDivider = 1;
+            speedJumpReducer = 1;
         }
-        //Syntax for printing to console
-        //Debug.Log("Test!");
     }
+
+    private void FixedUpdate()
+    {
+        UpdatePhysicsMaterial();
+        if (Input.GetKey(KeyCode.D)|| Input.GetKey(KeyCode.A))
+        {
+            Move();
+        }
+    }
+
+    private void UpdatePhysicsMaterial()
+    {
+        if (Mathf.Abs(direction) > 0)
+        {
+            playerGroundCollider.sharedMaterial = playerMovingPhysicsMaterial;
+        }
+        else
+        {
+            playerGroundCollider.sharedMaterial = playerStoppingPhysicsMaterial;
+        }
+    }
+
     private void GetMovementInput()
     {
-       direction = Input.GetAxis("Horizontal");
+       direction = Input.GetAxisRaw("Horizontal");
     }
+
     private void Move()
     {
-        myRigidBody.velocity = new Vector2((speed*direction)/speedJumpDivider, myRigidBody.velocity.y);
-        //transform.Translate(speed, 0, 0);
+        myRigidBody.AddForce(Vector2.right*direction*acceleration);
+        Vector2 clampedVelocity = myRigidBody.velocity;
+        clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed/speedJumpReducer, maxSpeed/speedJumpReducer);
+        myRigidBody.velocity = clampedVelocity;
     }
+
     private void Jump()
     {
         
@@ -92,19 +105,7 @@ public class PlayerCharacter : MonoBehaviour {
             jumpCooldown = 90;
             jumpNumber++;
         }
-        /*if (myRigidBody.position.y > -2.5&&myRigidBody.velocity.y!=0)
-        {
-            jumpModifier -= 1;
-            jumpCooldown = 100;
-            myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, 3 * jumpModifier);
-            
-        }
-        else
-        {
-            myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, 3 * jumpModifier);
-            jumpCooldown = 50;
-            jumpModifier = 3;
-        }*/
+
     }
 
 }
