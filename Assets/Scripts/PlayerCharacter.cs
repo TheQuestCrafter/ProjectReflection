@@ -123,10 +123,14 @@ public class PlayerCharacter : MonoBehaviour {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         }
-    
+
     public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
-        currentCheckpoint = newCurrentCheckpoint;
+        if (currentCheckpoint != null)
+        {
+            currentCheckpoint.SetIsActivated(false);
+        }
+            currentCheckpoint = newCurrentCheckpoint;
+            currentCheckpoint.SetIsActivated(true);
     }
-
 }
