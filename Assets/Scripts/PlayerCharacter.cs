@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
@@ -21,25 +22,27 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private Collider2D playerGroundCollider;
     [SerializeField]
-    private float maxSpeed=5;
+    private float maxSpeed;
+    [SerializeField]
+    private Checkpoint currentCheckpoint;
+
     // Use this for initialization
 
     [SerializeField]
     private int jumpNumber;
-	void Start () {
+    void Start() {
         jumpNumber = 0;
         jumpCooldown = 0;
+    }
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update() {
         GetMovementInput();
         if (jumpNumber > 0)
         {
             speedJumpReducer = 2;
         }
-        if (Input.GetKey(KeyCode.Space)&&jumpCooldown==0)
+        if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
         {
             Jump();
         }
@@ -60,7 +63,7 @@ public class PlayerCharacter : MonoBehaviour {
     private void FixedUpdate()
     {
         UpdatePhysicsMaterial();
-        if (Input.GetKey(KeyCode.D)|| Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
         {
             Move();
         }
@@ -80,32 +83,50 @@ public class PlayerCharacter : MonoBehaviour {
 
     private void GetMovementInput()
     {
-       direction = Input.GetAxisRaw("Horizontal");
+        direction = Input.GetAxisRaw("Horizontal");
     }
 
     private void Move()
     {
-        myRigidBody.AddForce(Vector2.right*direction*acceleration/speedJumpReducer);
+        myRigidBody.AddForce(Vector2.right * direction * acceleration / speedJumpReducer);
         Vector2 clampedVelocity = myRigidBody.velocity;
-        clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed/speedJumpReducer, maxSpeed/speedJumpReducer);
+        clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed / speedJumpReducer, maxSpeed / speedJumpReducer);
         myRigidBody.velocity = clampedVelocity;
     }
 
     private void Jump()
     {
-        
+
         if (jumpNumber == 0)
         {
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, jumpOneModifier);
             jumpNumber++;
             jumpCooldown = 50;
         }
-        else if (jumpNumber == 1){
+        else if (jumpNumber == 1) {
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, jumpTwoModifier);
             jumpCooldown = 90;
             jumpNumber++;
         }
 
+    }
+
+    public void Respawn()
+    {
+        if (currentCheckpoint != null)
+        {
+            myRigidBody.velocity = Vector2.zero;
+            transform.position = currentCheckpoint.transform.position;
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        }
+    
+    public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
+    {
+        currentCheckpoint = newCurrentCheckpoint;
     }
 
 }
