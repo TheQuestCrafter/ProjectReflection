@@ -18,9 +18,9 @@ TagManager:
   - PC
   - Checkpoints
   - Follower 2
-  - Background Scenery
-  - 
-  - 
+  - Background far
+  - Background mid
+  - Background close
   - 
   - 
   - 
@@ -40,9 +40,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackgroundFar
+    uniqueID: 2808680787
+    locked: 0
+  - name: BackgroundMid
+    uniqueID: 4183791237
+    locked: 0
+  - name: BackgroundClose
+    uniqueID: 4269837405
+    locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: New Layer
-    uniqueID: 2808680787
     locked: 0
