@@ -11,6 +11,9 @@ public class Checkpoint : MonoBehaviour {
     private float inactiveScale = 1, activatedScale = 1.5f;
 
     [SerializeField]
+    private Sprite inactiveSprite, activeSprite;
+
+    [SerializeField]
     private Color unactivatedColor, activatedColor;
 
     private bool isActivated;
@@ -56,6 +59,16 @@ public class Checkpoint : MonoBehaviour {
         }
         transform.Rotate(Vector3.up * rotationSpeed*Time.deltaTime);
     }
+
+    private void UpdateSprite()
+    {
+        Sprite sprite = inactiveSprite;
+        if (isActivated == true)
+        {
+            sprite = activeSprite;
+        }
+        spriteRenderer.sprite = sprite;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -68,7 +81,8 @@ public class Checkpoint : MonoBehaviour {
     public void SetIsActivated(bool value)
     {
         isActivated = value;
-        UpdateScale();
-        UpdateColor();
+        //UpdateScale();
+        //UpdateColor();
+        UpdateSprite();
     }
 }

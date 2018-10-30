@@ -913,6 +913,24 @@ GameObject:
   m_PrefabParentObject: {fileID: 1773599753494936, guid: 3f2c4c952aa0e734db167f4f957bdea7,
     type: 2}
   m_PrefabInternal: {fileID: 786017519}
+--- !u!95 &351094345
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 351094344}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7d05d77d5d4ec0d4e8b7bf6dd113efc3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!70 &351094351
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
