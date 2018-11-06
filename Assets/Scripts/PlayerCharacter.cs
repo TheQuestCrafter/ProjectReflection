@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,16 @@ public class PlayerCharacter : MonoBehaviour {
     private float maxSpeed;
     [SerializeField]
     private Checkpoint currentCheckpoint;
+    [SerializeField]
+    Animator anim;
+    [SerializeField]
+    Transform groundCheck;
+    [SerializeField]
+    LayerMask whatIsGround;
+    [SerializeField]
+    float groundRadius = 0.2f, speed;
+    bool facingRight = true, grounded = false, falling=false;
+
 
     // Use this for initialization
 
@@ -58,6 +69,23 @@ public class PlayerCharacter : MonoBehaviour {
         {
             speedJumpReducer = 1;
         }
+        UpdateAnimationParameters();
+    }
+
+    private void UpdateAnimationParameters()
+    {
+        grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
+        anim.SetBool("IsOnGround", grounded);
+        if (myRigidBody.velocity.y < 0 && grounded == false)
+        {
+            falling = true;
+        }
+        else if (grounded==true || myRigidBody.velocity.y <= 0)
+        {
+            falling = false;
+        }
+        anim.SetBool("Falling", falling);
+        anim.SetFloat("Speed", Math.Abs(myRigidBody.velocity.x));
     }
 
     private void FixedUpdate()
@@ -66,6 +94,14 @@ public class PlayerCharacter : MonoBehaviour {
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
         {
             Move();
+        }
+        if (direction > 0 && !facingRight)
+        {
+            Flip();
+        }
+        else if (direction < 0 && facingRight)
+        {
+            Flip();
         }
     }
 
@@ -96,9 +132,10 @@ public class PlayerCharacter : MonoBehaviour {
 
     private void Jump()
     {
-
-        if (jumpNumber == 0)
+        //ToDo: Double check jump
+       if (jumpNumber == 0&&grounded==true)
         {
+            anim.SetBool("IsOnGround", false);
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, jumpOneModifier);
             jumpNumber++;
             jumpCooldown = 50;
@@ -108,7 +145,7 @@ public class PlayerCharacter : MonoBehaviour {
             jumpCooldown = 90;
             jumpNumber++;
         }
-
+        
     }
 
     public void Respawn()
@@ -132,5 +169,12 @@ public class PlayerCharacter : MonoBehaviour {
         }
             currentCheckpoint = newCurrentCheckpoint;
             currentCheckpoint.SetIsActivated(true);
+    }
+    void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 }
