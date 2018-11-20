@@ -35,6 +35,10 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     float groundRadius = 0.2f, speed;
     bool facingRight = true, grounded = false, falling=false;
+    private bool isInDeath;
+    [SerializeField]
+    private float timeToDeath;
+    private float deathTimer;
 
 
     // Use this for initialization
@@ -44,19 +48,37 @@ public class PlayerCharacter : MonoBehaviour {
     void Start() {
         jumpNumber = 0;
         jumpCooldown = 0;
+        anim.SetBool("IsDead", false);
     }
 
     // Update is called once per frame
     void Update() {
+        if (Time.realtimeSinceStartup - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
+        {
+            if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
+            {
+                Jump();
+            }
+            deathTimer = 0;
+        }
+        if (isInDeath)
+        {
+            anim.SetBool("IsDead", true);
+            if (Time.realtimeSinceStartup - deathTimer >= timeToDeath)
+            {
+                Respawn();
+                GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            }
+        }
         GetMovementInput();
         if (jumpNumber > 0)
         {
             speedJumpReducer = 2;
         }
-        if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
+        /*if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
         {
             Jump();
-        }
+        }*/
         if (jumpCooldown > 0)
         {
             jumpCooldown--;
@@ -70,6 +92,7 @@ public class PlayerCharacter : MonoBehaviour {
             speedJumpReducer = 1;
         }
         UpdateAnimationParameters();
+
     }
 
     private void UpdateAnimationParameters()
@@ -91,17 +114,21 @@ public class PlayerCharacter : MonoBehaviour {
     private void FixedUpdate()
     {
         UpdatePhysicsMaterial();
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+        if (Time.time - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
         {
-            Move();
-        }
-        if (direction > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if (direction < 0 && facingRight)
-        {
-            Flip();
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+            {
+                Move();
+            }
+            if (direction > 0 && !facingRight)
+            {
+                Flip();
+            }
+            else if (direction < 0 && facingRight)
+            {
+                Flip();
+            }
+            deathTimer = 0;
         }
     }
 
@@ -148,12 +175,21 @@ public class PlayerCharacter : MonoBehaviour {
         
     }
 
-    public void Respawn()
+    public void StartRespawn()
     {
+        isInDeath = true;
+        deathTimer = Time.realtimeSinceStartup;
+    }
+
+    private void Respawn()
+    {
+        anim.SetBool("IsDead", false);
+        isInDeath = false;
         if (currentCheckpoint != null)
         {
             myRigidBody.velocity = Vector2.zero;
             transform.position = currentCheckpoint.transform.position;
+            transform.position = new Vector2(transform.position.x, transform.position.y-.2f);
         }
         else
         {
@@ -176,5 +212,14 @@ public class PlayerCharacter : MonoBehaviour {
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("collectible"))
+        {
+            other.gameObject.SetActive(false);
+            
+        }
     }
 }
