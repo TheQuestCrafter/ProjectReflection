@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class collectible : MonoBehaviour {
+public class Collectible : MonoBehaviour {
 
     [SerializeField]
     private int upDownAmount=10;
@@ -16,16 +16,39 @@ public class collectible : MonoBehaviour {
 
     private int bounceAmount;
     private bool falling=true;
+    private AudioSource audioSource;
+    private SpriteRenderer spriteRenderer;
+    private CircleCollider2D circleCollider;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         bounceAmount = upDownAmount;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        circleCollider = GetComponent<CircleCollider2D>();
     }
 
-	// Update is called once per frame
-	void FixedUpdate () {
+    // Update is called once per frame
+    void FixedUpdate()
+    {
         Bounce();
-	}
+    }
+
+    /*public void Collected()
+    {
+        audioSource.Play();
+    }*/
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            audioSource.Play();
+            spriteRenderer.enabled = false;
+            circleCollider.enabled = false;
+            Destroy(gameObject, audioSource.clip.length);
+        }
+    }
 
     private void Bounce()
     {

@@ -6,7 +6,12 @@ using UnityEngine.SceneManagement;
 public class Door : MonoBehaviour {
 
     private bool isPlayerInTrigger;
+    private AudioSource audioSource;
 
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -26,6 +31,7 @@ public class Door : MonoBehaviour {
 	void Update () {
         if (Input.GetButtonDown("Activate") && isPlayerInTrigger)
         {
+            //audioSource.Play();
             Debug.Log("Player Activated Door");
             SceneManager.LoadScene("SampleScene");
         }

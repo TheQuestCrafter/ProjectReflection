@@ -39,6 +39,10 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private float timeToDeath;
     private float deathTimer;
+    private AudioSource audioSource;
+    private AudioSource collectibleAudio;
+    [SerializeField]
+    private float deathVector;
 
 
     // Use this for initialization
@@ -46,16 +50,17 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private int jumpNumber;
     void Start() {
+        audioSource = GetComponent<AudioSource>(); //importing jump sound
         jumpNumber = 0;
         jumpCooldown = 0;
-        anim.SetBool("IsDead", false);
+        anim.SetBool("IsDead", false); //starting game not dead
     }
 
     // Update is called once per frame
     void Update() {
         if (Time.realtimeSinceStartup - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
         {
-            if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
+            if (Input.GetButtonDown("Jump") && jumpCooldown == 0)
             {
                 Jump();
             }
@@ -69,6 +74,7 @@ public class PlayerCharacter : MonoBehaviour {
                 Respawn();
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             }
+            GetComponent<Rigidbody2D>().velocity = myRigidBody.velocity/deathVector;
         }
         GetMovementInput();
         if (jumpNumber > 0)
@@ -154,6 +160,10 @@ public class PlayerCharacter : MonoBehaviour {
         myRigidBody.AddForce(Vector2.right * direction * acceleration / speedJumpReducer);
         Vector2 clampedVelocity = myRigidBody.velocity;
         clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed / speedJumpReducer, maxSpeed / speedJumpReducer);
+        /*if (isInDeath)
+        {
+            clampedVelocity.x = clampedVelocity.x/10;
+        }*/
         myRigidBody.velocity = clampedVelocity;
     }
 
@@ -162,12 +172,14 @@ public class PlayerCharacter : MonoBehaviour {
         //ToDo: Double check jump
        if (jumpNumber == 0&&grounded==true)
         {
+            audioSource.Play();
             anim.SetBool("IsOnGround", false);
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, jumpOneModifier);
             jumpNumber++;
             jumpCooldown = 50;
         }
         else if (jumpNumber == 1) {
+            audioSource.Play();
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, jumpTwoModifier);
             jumpCooldown = 90;
             jumpNumber++;
@@ -179,6 +191,7 @@ public class PlayerCharacter : MonoBehaviour {
     {
         isInDeath = true;
         deathTimer = Time.realtimeSinceStartup;
+        
     }
 
     private void Respawn()
@@ -214,12 +227,13 @@ public class PlayerCharacter : MonoBehaviour {
         transform.localScale = theScale;
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+   /* void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("collectible"))
         {
+            //collectibleAudio = other.gameObject.GetComponent<AudioSource>();
+            //collectibleAudio.Play();
             other.gameObject.SetActive(false);
-            
         }
-    }
+    }*/
 }
