@@ -29,6 +29,7 @@ public class Checkpoint : MonoBehaviour {
 
     private void Update()
     {
+        //rotates book for flair
         UpdateRotate();
     }
 
@@ -64,6 +65,7 @@ public class Checkpoint : MonoBehaviour {
 
     private void UpdateSprite()
     {
+        //updates sprite if it is activated
         Sprite sprite = inactiveSprite;
         if (isActivated == true)
         {
@@ -75,6 +77,7 @@ public class Checkpoint : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("Player") && !isActivated)
         {
+            //sets players check point when colliding with player
             audioSource.Play();
             PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
             player.SetCurrentCheckpoint(this);
@@ -83,6 +86,7 @@ public class Checkpoint : MonoBehaviour {
 
     public void SetIsActivated(bool value)
     {
+        //checkpoint changes sprite to open book when updated
         isActivated = value;
         //UpdateScale();
         //UpdateColor();

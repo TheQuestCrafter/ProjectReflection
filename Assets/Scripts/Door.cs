@@ -16,6 +16,7 @@ public class Door : MonoBehaviour {
     {
         if (collision.CompareTag("Player"))
         {
+            //registers player is currently touching door.
             isPlayerInTrigger = true;
         }
     }
@@ -23,6 +24,7 @@ public class Door : MonoBehaviour {
     {
         if (collision.CompareTag("Player"))
         {
+            //registers player is no longer touching door.
             isPlayerInTrigger = false;
         }
     }
@@ -31,6 +33,8 @@ public class Door : MonoBehaviour {
 	void Update () {
         if (Input.GetButtonDown("Activate") && isPlayerInTrigger)
         {
+            //allows player to exit current scene and move to next scene
+            //ToDo: Replace scene with variable so each door can have a different scene to lead to.
             //audioSource.Play();
             Debug.Log("Player Activated Door");
             SceneManager.LoadScene("SampleScene");

@@ -39,6 +39,8 @@ public class Collectible : MonoBehaviour {
         audioSource.Play();
     }*/
 
+    //Allows player to pick up collectible
+    //ToDo: Make collectible display text in UI
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -50,6 +52,8 @@ public class Collectible : MonoBehaviour {
         }
     }
 
+    //Makes the collectible bounce down and then back up to its starting position.
+    //ToDo: add lerping
     private void Bounce()
     {
         if (bounceAmount <= upDownAmount && falling && bounceAmount>0)

@@ -17,6 +17,7 @@ public class Hazard : MonoBehaviour {
             audioSource.PlayDelayed(0.5f);
             PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
             player.StartRespawn();
+            //plays death sound and starts the player's respawn.
         }
     }
 }

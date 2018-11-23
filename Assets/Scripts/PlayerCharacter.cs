@@ -50,7 +50,7 @@ public class PlayerCharacter : MonoBehaviour {
     [SerializeField]
     private int jumpNumber;
     void Start() {
-        audioSource = GetComponent<AudioSource>(); //importing jump sound
+        audioSource = GetComponent<AudioSource>();
         jumpNumber = 0;
         jumpCooldown = 0;
         anim.SetBool("IsDead", false); //starting game not dead
@@ -62,7 +62,7 @@ public class PlayerCharacter : MonoBehaviour {
         {
             if (Input.GetButtonDown("Jump") && jumpCooldown == 0)
             {
-                Jump();
+                Jump();//allows player to jump and checks to make sure character can't jump when dead
             }
             deathTimer = 0;
         }
@@ -71,7 +71,7 @@ public class PlayerCharacter : MonoBehaviour {
             anim.SetBool("IsDead", true);
             if (Time.realtimeSinceStartup - deathTimer >= timeToDeath)
             {
-                Respawn();
+                Respawn();//if death timer has gone up and matches time to death, it will enter the next stage of respawn.
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             }
             GetComponent<Rigidbody2D>().velocity = myRigidBody.velocity/deathVector;
@@ -79,7 +79,7 @@ public class PlayerCharacter : MonoBehaviour {
         GetMovementInput();
         if (jumpNumber > 0)
         {
-            speedJumpReducer = 2;
+            speedJumpReducer = 2; // reduces jump height with each subsequent jump.
         }
         /*if (Input.GetKey(KeyCode.Space) && jumpCooldown == 0)
         {
@@ -91,11 +91,11 @@ public class PlayerCharacter : MonoBehaviour {
         }
         if (myRigidBody.velocity.y == 0)
         {
-            jumpNumber = 0;
+            jumpNumber = 0; //if the character is not moving vertically, the player has taken at least a moment to rest before jumping again.
         }
         if (jumpNumber == 0)
         {
-            speedJumpReducer = 1;
+            speedJumpReducer = 1; //first jump has no vertical distance reducer.
         }
         UpdateAnimationParameters();
 
@@ -105,6 +105,7 @@ public class PlayerCharacter : MonoBehaviour {
     {
         grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
         anim.SetBool("IsOnGround", grounded);
+        //sets tells animator if character is falling or on the ground.
         if (myRigidBody.velocity.y < 0 && grounded == false)
         {
             falling = true;
@@ -114,7 +115,7 @@ public class PlayerCharacter : MonoBehaviour {
             falling = false;
         }
         anim.SetBool("Falling", falling);
-        anim.SetFloat("Speed", Math.Abs(myRigidBody.velocity.x));
+        anim.SetFloat("Speed", Math.Abs(myRigidBody.velocity.x)); //lets the animator know the speed of player.
     }
 
     private void FixedUpdate()
@@ -122,10 +123,12 @@ public class PlayerCharacter : MonoBehaviour {
         UpdatePhysicsMaterial();
         if (Time.time - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
         {
+            //character cannot use the move function when dying.
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
             {
-                Move();
+                Move();//lets player move a fixed amount not dependent on frames
             }
+            //player flips sprite when going opposite direction of prior movement.
             if (direction > 0 && !facingRight)
             {
                 Flip();
@@ -140,6 +143,7 @@ public class PlayerCharacter : MonoBehaviour {
 
     private void UpdatePhysicsMaterial()
     {
+        //changes physics material when moving or stopping.
         if (Mathf.Abs(direction) > 0)
         {
             playerGroundCollider.sharedMaterial = playerMovingPhysicsMaterial;
@@ -152,6 +156,7 @@ public class PlayerCharacter : MonoBehaviour {
 
     private void GetMovementInput()
     {
+        //sets direction of movement from player commands
         direction = Input.GetAxisRaw("Horizontal");
     }
 
@@ -164,12 +169,12 @@ public class PlayerCharacter : MonoBehaviour {
         {
             clampedVelocity.x = clampedVelocity.x/10;
         }*/
-        myRigidBody.velocity = clampedVelocity;
+        myRigidBody.velocity = clampedVelocity;//adds up a build up of acceleration to a maximum velocity
     }
 
     private void Jump()
     {
-        //ToDo: Double check jump
+        //Allows player to jump twice before having to fall to the ground.
        if (jumpNumber == 0&&grounded==true)
         {
             audioSource.Play();
@@ -189,13 +194,14 @@ public class PlayerCharacter : MonoBehaviour {
 
     public void StartRespawn()
     {
+        //stage one of respawn
         isInDeath = true;
         deathTimer = Time.realtimeSinceStartup;
-        
     }
 
     private void Respawn()
     {
+        //last stage of respawn, checks for checkpoint and resets 'is dead' to default of false
         anim.SetBool("IsDead", false);
         isInDeath = false;
         if (currentCheckpoint != null)
@@ -212,6 +218,7 @@ public class PlayerCharacter : MonoBehaviour {
 
     public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
+        //creates checkpoint for player.
         if (currentCheckpoint != null)
         {
             currentCheckpoint.SetIsActivated(false);
@@ -221,6 +228,7 @@ public class PlayerCharacter : MonoBehaviour {
     }
     void Flip()
     {
+        //flips player when switching direction in which the player is facing.
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
