@@ -2,23 +2,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Collectible : MonoBehaviour {
 
     [SerializeField]
-    private int upDownAmount=10;
+    private int upDownAmount=10, timeTextIsUp;
     [SerializeField]
     private string displayText;
     [SerializeField]
     private string objectName;
     [SerializeField]
     private float bounceYAmount=0.005f;
+    [SerializeField]
+    private Text collectibleText;
 
-    private int bounceAmount;
+    private int bounceAmount, UITime=0;
     private bool falling=true;
     private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
+    private bool textIsActive;
+    private Color fillerColor;
 
     void Start()
     {
@@ -26,12 +31,30 @@ public class Collectible : MonoBehaviour {
         bounceAmount = upDownAmount;
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
+        collectibleText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         Bounce();
+        if (UITime > 0)
+        {
+            Debug.Log(UITime + " left");
+            textIsActive = true;
+            UITime--;
+            fillerColor = collectibleText.color;
+            fillerColor.a -= 0.001f;
+            collectibleText.color = fillerColor;
+        }
+        else if (UITime <= 0)
+        {
+            textIsActive = false;
+        }
+        if (textIsActive == false)
+        {
+            collectibleText.gameObject.SetActive(false);
+        }
     }
 
     /*public void Collected()
@@ -45,10 +68,17 @@ public class Collectible : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (objectName == "Necklace")
+            {
+                Debug.Log("Picked Up Necklace");
+                collectibleText.gameObject.SetActive(true);
+                collectibleText.text = displayText;
+                UITime = timeTextIsUp;
+            }
             audioSource.Play();
             spriteRenderer.enabled = false;
             circleCollider.enabled = false;
-            Destroy(gameObject, audioSource.clip.length);
+            //Destroy(gameObject, audioSource.clip.length);
         }
     }
 
