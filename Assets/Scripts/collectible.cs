@@ -8,6 +8,7 @@ public class Collectible : MonoBehaviour {
 
     [SerializeField]
     private int upDownAmount=10, timeTextIsUp;
+    [TextArea(3,5)]
     [SerializeField]
     private string displayText;
     [SerializeField]
@@ -22,8 +23,9 @@ public class Collectible : MonoBehaviour {
     private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
-    private bool textIsActive;
+    private bool textIsActive, textWasActive;
     private Color fillerColor;
+    //private PlayerCharacter PC;
 
     void Start()
     {
@@ -40,20 +42,23 @@ public class Collectible : MonoBehaviour {
         Bounce();
         if (UITime > 0)
         {
+            collectibleText.gameObject.SetActive(true);
             Debug.Log(UITime + " left");
             textIsActive = true;
             UITime--;
             fillerColor = collectibleText.color;
             fillerColor.a -= 0.001f;
             collectibleText.color = fillerColor;
+            textWasActive = true;
         }
         else if (UITime <= 0)
         {
             textIsActive = false;
         }
-        if (textIsActive == false)
+        if (textIsActive == false && textWasActive == true)
         {
             collectibleText.gameObject.SetActive(false);
+            textWasActive = false;
         }
     }
 
@@ -68,11 +73,21 @@ public class Collectible : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            //UITime = PC.CollectibleTimerReset(UITime, timeTextIsUp);
             if (objectName == "Necklace")
             {
                 Debug.Log("Picked Up Necklace");
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
+                ResetAlpha();
+                UITime = timeTextIsUp;
+            }
+            else if (objectName == "Present")
+            {
+                Debug.Log("Picked Up Present");
+                collectibleText.gameObject.SetActive(true);
+                collectibleText.text = displayText;
+                ResetAlpha();
                 UITime = timeTextIsUp;
             }
             audioSource.Play();
@@ -80,6 +95,13 @@ public class Collectible : MonoBehaviour {
             circleCollider.enabled = false;
             //Destroy(gameObject, audioSource.clip.length);
         }
+    }
+
+    private void ResetAlpha()
+    {
+        fillerColor = collectibleText.color;
+        fillerColor.a = 1;
+        collectibleText.color = fillerColor;
     }
 
     //Makes the collectible bounce down and then back up to its starting position.

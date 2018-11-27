@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerCharacter : MonoBehaviour {
+
+    //public int UITextTime { get; set; }
+
     [SerializeField]
     private Rigidbody2D myRigidBody;
     [SerializeField]
@@ -234,6 +237,12 @@ public class PlayerCharacter : MonoBehaviour {
         theScale.x *= -1;
         transform.localScale = theScale;
     }
+
+    /*public int CollectibleTimerReset(int UITimer, int UIMaxTimer)
+    {
+        UITimer = 1000;
+        return UITimer;
+    }*/
 
    /* void OnTriggerEnter2D(Collider2D other)
     {
