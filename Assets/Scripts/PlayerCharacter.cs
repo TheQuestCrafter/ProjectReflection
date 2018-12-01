@@ -171,7 +171,7 @@ public class PlayerCharacter : MonoBehaviour
     private void Jump()
     {
         //Allows player to jump twice before having to fall to the ground.
-       if (jumpNumber == 0&&grounded==true)
+       if (jumpNumber == 0 && grounded)
         {
             audioSource.Play();
             anim.SetBool("IsOnGround", false);
