@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Checkpoint : MonoBehaviour {
+public class Checkpoint : MonoBehaviour
+{
 
     [SerializeField]
-    private float unactivatedRotationSpeed = 100, activatedRotationSpeed = 300;
-
-    [SerializeField]
-    private float inactiveScale = 1, activatedScale = 1.5f;
+    private float inactivatedRotationSpeed = 100, activatedRotationSpeed = 300;
 
     [SerializeField]
     private Sprite inactiveSprite, activeSprite;
-
-    [SerializeField]
-    private Color unactivatedColor, activatedColor;
 
     private bool isActivated;
     private SpriteRenderer spriteRenderer;
@@ -24,7 +19,6 @@ public class Checkpoint : MonoBehaviour {
     {
         audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        UpdateColor();
     }
 
     private void Update()
@@ -33,29 +27,9 @@ public class Checkpoint : MonoBehaviour {
         UpdateRotate();
     }
 
-    private void UpdateColor()
-    {
-        Color color = unactivatedColor;
-        if (isActivated == true)
-        {
-            color = activatedColor;
-        }
-        spriteRenderer.color = color;
-    }
-
-    private void UpdateScale()
-    {
-        float scale = inactiveScale;
-        if (isActivated == true)
-        {
-            scale = activatedScale;
-        }
-        transform.localScale = Vector3.one * scale;
-    }
-
     private void UpdateRotate()
     {
-        float rotationSpeed = unactivatedRotationSpeed;
+        float rotationSpeed = inactivatedRotationSpeed;
         if (isActivated == true)
         {
             rotationSpeed = activatedRotationSpeed;
@@ -88,8 +62,6 @@ public class Checkpoint : MonoBehaviour {
     {
         //checkpoint changes sprite to open book when updated
         isActivated = value;
-        //UpdateScale();
-        //UpdateColor();
         UpdateSprite();
     }
 }

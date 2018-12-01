@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Collectible : MonoBehaviour {
+public class Collectible : MonoBehaviour
+{
 
     [SerializeField]
     private int upDownAmount=10, timeTextIsUp;
@@ -25,7 +26,6 @@ public class Collectible : MonoBehaviour {
     private CircleCollider2D circleCollider;
     private bool textIsActive, textWasActive;
     private Color fillerColor;
-    //private PlayerCharacter PC;
 
     void Start()
     {
@@ -62,18 +62,10 @@ public class Collectible : MonoBehaviour {
         }
     }
 
-    /*public void Collected()
-    {
-        audioSource.Play();
-    }*/
-
-    //Allows player to pick up collectible
-    //ToDo: Make collectible display text in UI
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            //UITime = PC.CollectibleTimerReset(UITime, timeTextIsUp);
             if (objectName == "Necklace")
             {
                 Debug.Log("Picked Up Necklace");
@@ -93,7 +85,6 @@ public class Collectible : MonoBehaviour {
             audioSource.Play();
             spriteRenderer.enabled = false;
             circleCollider.enabled = false;
-            //Destroy(gameObject, audioSource.clip.length);
         }
     }
 
@@ -110,24 +101,20 @@ public class Collectible : MonoBehaviour {
     {
         if (bounceAmount <= upDownAmount && falling && bounceAmount>0)
         {
-            Debug.Log("Falling");
             GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y - bounceYAmount);
             bounceAmount--;
         }
-        else if (falling == false && bounceAmount < upDownAmount)
+        else if (!falling && bounceAmount < upDownAmount)
         {
-            Debug.Log("Rising");
             GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y + bounceYAmount);
             bounceAmount++;
         }
         else if (bounceAmount <= 0)
         {
-            Debug.Log("Falling=false");
             falling = false;
         }
-        else if(falling==false && bounceAmount >= upDownAmount)
+        else if(!falling && bounceAmount >= upDownAmount)
         {
-            Debug.Log("Falling = true");
             falling = true;
         }
     }

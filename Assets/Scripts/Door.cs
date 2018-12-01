@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Door : MonoBehaviour {
+public class Door : MonoBehaviour
+{
 
     private bool isPlayerInTrigger;
     private AudioSource audioSource;
@@ -36,7 +37,6 @@ public class Door : MonoBehaviour {
             //allows player to exit current scene and move to next scene
             //ToDo: Replace scene with variable so each door can have a different scene to lead to.
             //audioSource.Play();
-            Debug.Log("Player Activated Door");
             SceneManager.LoadScene("SampleScene");
         }
 	}
