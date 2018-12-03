@@ -1029,11 +1029,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!1 &351094344 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1331844491706046, guid: 3f2c4c952aa0e734db167f4f957bdea7,
-    type: 2}
-  m_PrefabInternal: {fileID: 1013114032}
 --- !u!4 &351094352 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4294571587536076, guid: 3f2c4c952aa0e734db167f4f957bdea7,
@@ -1358,6 +1353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf4b3ad2f199e540b6e13003cd16d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneIndexNumber: 2
 --- !u!212 &452492570
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1700,8 +1696,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983147fc37e847344a30bf58f42590b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 351094344}
-  offset: {x: 0, y: 0, z: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
