@@ -67,7 +67,6 @@ public class Collectible : MonoBehaviour
         {
             if (objectName == "Necklace")
             {
-                Debug.Log("Picked Up Necklace");
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
                 ResetAlpha();
@@ -75,7 +74,20 @@ public class Collectible : MonoBehaviour
             }
             else if (objectName == "Present")
             {
-                Debug.Log("Picked Up Present");
+                collectibleText.gameObject.SetActive(true);
+                collectibleText.text = displayText;
+                ResetAlpha();
+                UITime = timeTextIsUp;
+            }
+            else if (objectName == "Gem")
+            {
+                collectibleText.gameObject.SetActive(true);
+                collectibleText.text = displayText;
+                ResetAlpha();
+                UITime = timeTextIsUp;
+            }
+            else if (objectName == "WeddingRing")
+            {
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
                 ResetAlpha();
