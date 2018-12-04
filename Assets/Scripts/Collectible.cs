@@ -43,7 +43,6 @@ public class Collectible : MonoBehaviour
         if (UITime > 0)
         {
             collectibleText.gameObject.SetActive(true);
-            Debug.Log(UITime + " left");
             textIsActive = true;
             UITime--;
             fillerColor = collectibleText.color;
