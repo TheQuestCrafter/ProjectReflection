@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Hazard : MonoBehaviour
 {
+    [SerializeField]
+    private float audioDelay = 0.5f;
     private AudioSource audioSource;
     private void Start()
     {
@@ -15,7 +17,7 @@ public class Hazard : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            audioSource.PlayDelayed(0.5f);
+            audioSource.PlayDelayed(audioDelay);
             PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
             player.StartRespawn();
             //plays death sound and starts the player's respawn.

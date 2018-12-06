@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerCharacter : MonoBehaviour
 {
+    #region SerializedFields
     [SerializeField]
     private Rigidbody2D myRigidBody;
     [SerializeField]
@@ -14,8 +15,10 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField]
     private float jumpCooldown;
     [SerializeField]
+    [Tooltip("The multiplier for how high the first jump is.")]
     private float jumpOneModifier;
     [SerializeField]
+    [Tooltip("The Multiplier for how high the second jump is")]
     private float jumpTwoModifier;
     [SerializeField]
     private float speedJumpReducer;
@@ -35,17 +38,22 @@ public class PlayerCharacter : MonoBehaviour
     LayerMask whatIsGround;
     [SerializeField]
     private float groundRadius = 0.2f, speed;
-    private bool facingRight = true, grounded = false, falling=false;
-    private bool isInDeath;
     [SerializeField]
-    private float timeToDeath;
-    private float deathTimer;
-    private AudioSource audioSource;
-    private AudioSource collectibleAudio;
-    [SerializeField]
+    [Tooltip("The vector multiplier that slows the character to halt while dying.")]
     private float deathVector;
     [SerializeField]
     private int jumpNumber;
+    [SerializeField]
+    [Tooltip("The time before character moves from dying phase to death and level restart.")]
+    private float timeToDeath;
+    #endregion
+    #region PrivateFields
+    private bool facingRight = true, grounded = false, falling=false;
+    private bool isInDeath;
+    private float deathTimer;
+    private AudioSource audioSource;
+    private AudioSource collectibleAudio;
+    #endregion
 
     void Start() {
         audioSource = GetComponent<AudioSource>();
@@ -156,12 +164,14 @@ public class PlayerCharacter : MonoBehaviour
 
     private void GetMovementInput()
     {
-        //sets direction of movement from player commands
+        //<summary>sets direction of movement from player commands</summary>
         direction = Input.GetAxisRaw("Horizontal");
     }
 
     private void Move()
     {
+        //<summary> speedJumpReducer reduces the player's ability slightly to move on the x-axis if the player is jumping.
+        //</summary>
         myRigidBody.AddForce(Vector2.right * direction * acceleration / speedJumpReducer);
         Vector2 clampedVelocity = myRigidBody.velocity;
         clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed / speedJumpReducer, maxSpeed / speedJumpReducer);
@@ -170,7 +180,8 @@ public class PlayerCharacter : MonoBehaviour
 
     private void Jump()
     {
-        //Allows player to jump twice before having to fall to the ground.
+        //<summary>Allows player to jump twice before having to fall to the ground.
+        //</summary>
        if (jumpNumber == 0 && grounded)
         {
             audioSource.Play();
@@ -189,14 +200,17 @@ public class PlayerCharacter : MonoBehaviour
 
     public void StartRespawn()
     {
-        //stage one of respawn
+        //<summary>stage one of respawn
+        //I have to have the function split into multiple parts due to it needing to constantly update the timer in fixed update
+        //and to part is to slow the character to a halt and start death animation while the other restarts the player from the 
+        //last checkpoint</summary>
         isInDeath = true;
         deathTimer = Time.realtimeSinceStartup;
     }
 
     private void Respawn()
     {
-        //last stage of respawn, checks for checkpoint and resets 'is dead' to default of false
+        //<summary>last stage of respawn, checks for checkpoint and resets 'is dead' to default of false</summary>
         anim.SetBool("IsDead", false);
         isInDeath = false;
         if (currentCheckpoint != null)
@@ -213,7 +227,7 @@ public class PlayerCharacter : MonoBehaviour
 
     public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
-        //creates checkpoint for player.
+        //<summary>creates checkpoint for player.</summary>
         if (currentCheckpoint != null)
         {
             currentCheckpoint.SetIsActivated(false);
@@ -223,7 +237,7 @@ public class PlayerCharacter : MonoBehaviour
     }
     private void Flip()
     {
-        //flips player when switching direction in which the player is facing.
+        //<summary>flips player when switching direction in which the player is facing.</summary>
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;

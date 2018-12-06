@@ -6,9 +6,13 @@ using UnityEngine.UI;
 
 public class Collectible : MonoBehaviour
 {
-
+    #region
     [SerializeField]
-    private int upDownAmount=10, timeTextIsUp;
+    [Tooltip("How many pixels the collectible moves up and down.")]
+    private float upDownAmount = 10;
+    [SerializeField]
+    [Tooltip("The amount of time the collectible text is up before it is turned off.")]
+    private float timeTextIsUp;
     [TextArea(3,5)]
     [SerializeField]
     private string displayText;
@@ -18,14 +22,19 @@ public class Collectible : MonoBehaviour
     private float bounceYAmount=0.005f;
     [SerializeField]
     private Text collectibleText;
+    [SerializeField]
+    private float alphaMinus = -.001f;
 
-    private int bounceAmount, UITime=0;
-    private bool falling=true;
+    private float bounceAmount;
+    private float UITime=0;
+    private bool falling = true;
     private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
     private bool textIsActive, textWasActive;
     private Color fillerColor;
+    const string necklace = "Necklace", gem = "Gem", ring = "WeddingRing", present = "Present";
+    #endregion
 
     void Start()
     {
@@ -46,7 +55,7 @@ public class Collectible : MonoBehaviour
             textIsActive = true;
             UITime--;
             fillerColor = collectibleText.color;
-            fillerColor.a -= 0.001f;
+            fillerColor.a -= alphaMinus;
             collectibleText.color = fillerColor;
             textWasActive = true;
         }
@@ -65,28 +74,28 @@ public class Collectible : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (objectName == "Necklace")
+            if (objectName == necklace)
             {
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
                 ResetAlpha();
                 UITime = timeTextIsUp;
             }
-            else if (objectName == "Present")
+            else if (objectName == present)
             {
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
                 ResetAlpha();
                 UITime = timeTextIsUp;
             }
-            else if (objectName == "Gem")
+            else if (objectName == gem)
             {
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
                 ResetAlpha();
                 UITime = timeTextIsUp;
             }
-            else if (objectName == "WeddingRing")
+            else if (objectName == ring)
             {
                 collectibleText.gameObject.SetActive(true);
                 collectibleText.text = displayText;
@@ -105,11 +114,10 @@ public class Collectible : MonoBehaviour
         fillerColor.a = 1;
         collectibleText.color = fillerColor;
     }
-
-    //Makes the collectible bounce down and then back up to its starting position.
     //ToDo: add lerping
     private void Bounce()
     {
+        //<summary>Makes the collectible bounce down and then back up to its starting position.</summary>
         if (bounceAmount <= upDownAmount && falling && bounceAmount>0)
         {
             GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y - bounceYAmount);
