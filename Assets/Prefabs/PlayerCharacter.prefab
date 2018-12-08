@@ -254,9 +254,10 @@ MonoBehaviour:
     m_Bits: 4294951167
   groundRadius: 0.2
   speed: 0
-  timeToDeath: 3
   deathVector: 1.05
   jumpNumber: 0
+  timeToDeath: 1
+  deathBuffer: 0.5
 --- !u!114 &114865900953782652
 MonoBehaviour:
   m_ObjectHideFlags: 1

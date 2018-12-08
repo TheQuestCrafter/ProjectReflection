@@ -53,7 +53,7 @@ public class Collectible : MonoBehaviour
         {
             collectibleText.gameObject.SetActive(true);
             textIsActive = true;
-            UITime--;
+            UITime-=Time.deltaTime;
             fillerColor = collectibleText.color;
             fillerColor.a -= alphaMinus;
             collectibleText.color = fillerColor;
@@ -126,12 +126,13 @@ public class Collectible : MonoBehaviour
         //<summary>Makes the collectible bounce down and then back up to its starting position.</summary>
         if (bounceAmount <= upDownAmount && falling && bounceAmount>0)
         {
-            GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y - bounceYAmount);
+            this.gameObject.transform.position = new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y - bounceYAmount);
+            //GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y - bounceYAmount);
             bounceAmount--;
         }
         else if (!falling && bounceAmount < upDownAmount)
         {
-            GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y + bounceYAmount);
+            this.gameObject.transform.position = new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y + bounceYAmount);
             bounceAmount++;
         }
         else if (bounceAmount <= 0)

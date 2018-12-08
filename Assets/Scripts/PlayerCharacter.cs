@@ -46,6 +46,9 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField]
     [Tooltip("The time before character moves from dying phase to death and level restart.")]
     private float timeToDeath;
+    [SerializeField]
+    [Tooltip("Acts a small time difference between deathTimer and timeToDeath")]
+    private float deathBuffer;
     #endregion
     #region PrivateFields
     private bool facingRight = true, isOnGround = false, isFalling=false;
@@ -65,7 +68,8 @@ public class PlayerCharacter : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (Time.realtimeSinceStartup - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
+        
+        if (deathTimer>timeToDeath + deathBuffer || deathTimer == 0 || !isDead)
         {
             if (Input.GetButtonDown("Jump") && jumpCooldown == 0)
             {
@@ -73,10 +77,7 @@ public class PlayerCharacter : MonoBehaviour
             }
             DeathTimerZero();
         }
-        if (isDead)
-        {
-            DyingUpdate();
-        }
+        
         GetMovementInput();
         JumpCheck();
         UpdateAnimationParameters();
@@ -115,18 +116,19 @@ public class PlayerCharacter : MonoBehaviour
     {
         //<summary>if death timer has gone up and matches time to death, it will enter the next stage of respawn.</summary>
         anim.SetBool("IsDead", true);
-        if (Time.realtimeSinceStartup - deathTimer >= timeToDeath)
+        if (deathTimer > timeToDeath)
         {
             Respawn();
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            myRigidBody.velocity = new Vector2(0, 0);
         }
         DeathVector();
+        deathTimer += Time.deltaTime;
     }
 
     private void DeathVector()
     {
         //<summary>DeathVector acts to slow the player once they are in the process of dying.</summary>
-        GetComponent<Rigidbody2D>().velocity = myRigidBody.velocity / deathVector;
+        myRigidBody.velocity = myRigidBody.velocity / deathVector;
     }
 
     private void UpdateAnimationParameters()
@@ -160,8 +162,12 @@ public class PlayerCharacter : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDead)
+        {
+            DyingUpdate();
+        }
         UpdatePhysicsMaterial();
-        if (Time.time - deathTimer >= timeToDeath + 0.5f || deathTimer == 0)
+        if (deathTimer > timeToDeath + deathBuffer || deathTimer == 0 || !isDead)
         {
             //character cannot use the move function when dying.
             if (Input.GetButton("Horizontal"))
@@ -242,13 +248,12 @@ public class PlayerCharacter : MonoBehaviour
         //and to part is to slow the character to a halt and start death animation while the other restarts the player from the 
         //last checkpoint</summary>
         isDead = true;
-        deathTimer = Time.realtimeSinceStartup;
+        DeathTimerZero();//Time.realtimeSinceStartup;
     }
 
     private void Respawn()
     {
         //<summary>last stage of respawn, checks for checkpoint and resets 'is dead' to default of false</summary>
-        //anim.SetBool("IsDead", isDead);
         isDead = false;
         if (currentCheckpoint != null)
         {

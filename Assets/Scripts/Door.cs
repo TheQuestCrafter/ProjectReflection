@@ -35,9 +35,10 @@ public class Door : MonoBehaviour
 	void Update () {
         if (Input.GetButtonDown("Activate") && isPlayerInTrigger)
         {
+            DontDestroyOnLoad(this.gameObject);
             //allows player to exit current scene and move to next scene
             //ToDo: Replace scene with variable so each door can have a different scene to lead to.
-            //audioSource.Play();
+            audioSource.Play();
             SceneManager.LoadScene(sceneIndexNumber);
         }
 	}

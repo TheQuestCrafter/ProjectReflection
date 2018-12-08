@@ -293,6 +293,16 @@ Prefab:
       propertyPath: objectName
       value: WeddingRing
       objectReference: {fileID: 0}
+    - target: {fileID: 114543135335790666, guid: 9c129c13a0d617441b0a9d1053b8c34d,
+        type: 2}
+      propertyPath: timeTextIsUp
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114543135335790666, guid: 9c129c13a0d617441b0a9d1053b8c34d,
+        type: 2}
+      propertyPath: alphaMinus
+      value: 0.001
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c129c13a0d617441b0a9d1053b8c34d, type: 2}
   m_IsPrefabParent: 0
@@ -932,6 +942,16 @@ Prefab:
       propertyPath: displayText
       value: '"There is power in naming yourself, in proclaiming to the world that
         this is who you are." -Janet Mock'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114543135335790666, guid: 9c129c13a0d617441b0a9d1053b8c34d,
+        type: 2}
+      propertyPath: timeTextIsUp
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114543135335790666, guid: 9c129c13a0d617441b0a9d1053b8c34d,
+        type: 2}
+      propertyPath: alphaMinus
+      value: 0.001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c129c13a0d617441b0a9d1053b8c34d, type: 2}
@@ -17984,11 +18004,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 4.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -18011,7 +18031,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1905138793}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 11.501443, y: 5.236732, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 205943624}
