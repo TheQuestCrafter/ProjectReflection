@@ -72,6 +72,12 @@ public class Collectible : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        PlayerPickup(other);
+    }
+
+    private void PlayerPickup(Collider2D other)
+    {
+        ///Allows Player to pick up collectible.
         if (other.gameObject.CompareTag("Player"))
         {
             if (objectName == necklace)

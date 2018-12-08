@@ -48,8 +48,8 @@ public class PlayerCharacter : MonoBehaviour
     private float timeToDeath;
     #endregion
     #region PrivateFields
-    private bool facingRight = true, grounded = false, falling=false;
-    private bool isInDeath;
+    private bool facingRight = true, isOnGround = false, isFalling=false;
+    private bool isDead;
     private float deathTimer;
     private AudioSource audioSource;
     private AudioSource collectibleAudio;
@@ -70,26 +70,25 @@ public class PlayerCharacter : MonoBehaviour
             if (Input.GetButtonDown("Jump") && jumpCooldown == 0)
             {
                 Jump();
-                //allows player to jump and checks to make sure character can't jump when dead
             }
-            deathTimer = 0;
+            DeathTimerZero();
         }
-        if (isInDeath)
+        if (isDead)
         {
-            anim.SetBool("IsDead", true);
-            if (Time.realtimeSinceStartup - deathTimer >= timeToDeath)
-            {
-                Respawn();
-                //if death timer has gone up and matches time to death, it will enter the next stage of respawn.
-                GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            }
-            GetComponent<Rigidbody2D>().velocity = myRigidBody.velocity/deathVector;
+            DyingUpdate();
         }
         GetMovementInput();
+        JumpCheck();
+        UpdateAnimationParameters();
+    }
+
+    private void JumpCheck()
+    {
+        ///Checks what jump the character is on and applies and checks cooldown as well as apply x movement reduction while jumping
         if (jumpNumber > 0)
         {
-            speedJumpReducer = 2; 
-            // reduces jump height with each subsequent jump.
+            speedJumpReducer = 2;
+            // Applies x movement reduction while jumping
         }
         if (jumpCooldown > 0)
         {
@@ -97,33 +96,66 @@ public class PlayerCharacter : MonoBehaviour
         }
         if (myRigidBody.velocity.y == 0)
         {
-            jumpNumber = 0; 
+            jumpNumber = 0;
             //if the character is not moving vertically, the player has taken at least a moment to rest before jumping again.
         }
         if (jumpNumber == 0)
         {
-            speedJumpReducer = 1; 
+            speedJumpReducer = 1;
             //first jump has no vertical distance reducer.
         }
-        UpdateAnimationParameters();
+    }
+
+    private void DeathTimerZero()
+    {
+        deathTimer = 0;
+    }
+
+    private void DyingUpdate()
+    {
+        //<summary>if death timer has gone up and matches time to death, it will enter the next stage of respawn.</summary>
+        anim.SetBool("IsDead", true);
+        if (Time.realtimeSinceStartup - deathTimer >= timeToDeath)
+        {
+            Respawn();
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        }
+        DeathVector();
+    }
+
+    private void DeathVector()
+    {
+        //<summary>DeathVector acts to slow the player once they are in the process of dying.</summary>
+        GetComponent<Rigidbody2D>().velocity = myRigidBody.velocity / deathVector;
     }
 
     private void UpdateAnimationParameters()
     {
-        grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
-        anim.SetBool("IsOnGround", grounded);
-        //sets tells animator if character is falling or on the ground.
-        if (myRigidBody.velocity.y < 0 && grounded == false)
-        {
-            falling = true;
-        }
-        else if (grounded==true || myRigidBody.velocity.y <= 0)
-        {
-            falling = false;
-        }
-        anim.SetBool("Falling", falling);
+        IsOnGround();
+        UpdateIsFalling();
         anim.SetFloat("Speed", Math.Abs(myRigidBody.velocity.x)); 
         //lets the animator know the speed of player.
+    }
+
+    private void UpdateIsFalling()
+    {
+        //<summary>sets tells animator if character is falling or on the ground.</summary>
+        if (myRigidBody.velocity.y < 0 && isOnGround == false)
+        {
+            isFalling = true;
+        }
+        else if (isOnGround == true || myRigidBody.velocity.y <= 0)
+        {
+            isFalling = false;
+        }
+        anim.SetBool("Falling", isFalling);
+    }
+
+    private void IsOnGround()
+    {
+        anim.SetBool("IsDead", isDead);
+        isOnGround = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
+        anim.SetBool("IsOnGround", isOnGround);
     }
 
     private void FixedUpdate()
@@ -136,16 +168,21 @@ public class PlayerCharacter : MonoBehaviour
             {
                 Move();//lets player move a fixed amount not dependent on frames
             }
-            //player flips sprite when going opposite direction of prior movement.
-            if (direction > 0 && !facingRight)
-            {
-                Flip();
-            }
-            else if (direction < 0 && facingRight)
-            {
-                Flip();
-            }
-            deathTimer = 0;
+            FlipWhenNeeded();
+            DeathTimerZero();
+        }
+    }
+
+    private void FlipWhenNeeded()
+    {
+        //<summary>player flips sprite when going opposite direction of prior movement.</summary>
+        if (direction > 0 && !facingRight)
+        {
+            Flip();
+        }
+        else if (direction < 0 && facingRight)
+        {
+            Flip();
         }
     }
 
@@ -180,9 +217,9 @@ public class PlayerCharacter : MonoBehaviour
 
     private void Jump()
     {
-        //<summary>Allows player to jump twice before having to fall to the ground.
+        //<summary> Allows player to jump twice and checks to make sure character can't jump when dead
         //</summary>
-       if (jumpNumber == 0 && grounded)
+        if (jumpNumber == 0 && isOnGround)
         {
             audioSource.Play();
             anim.SetBool("IsOnGround", false);
@@ -204,15 +241,15 @@ public class PlayerCharacter : MonoBehaviour
         //I have to have the function split into multiple parts due to it needing to constantly update the timer in fixed update
         //and to part is to slow the character to a halt and start death animation while the other restarts the player from the 
         //last checkpoint</summary>
-        isInDeath = true;
+        isDead = true;
         deathTimer = Time.realtimeSinceStartup;
     }
 
     private void Respawn()
     {
         //<summary>last stage of respawn, checks for checkpoint and resets 'is dead' to default of false</summary>
-        anim.SetBool("IsDead", false);
-        isInDeath = false;
+        //anim.SetBool("IsDead", isDead);
+        isDead = false;
         if (currentCheckpoint != null)
         {
             myRigidBody.velocity = Vector2.zero;
