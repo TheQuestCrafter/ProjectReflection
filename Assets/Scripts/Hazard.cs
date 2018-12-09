@@ -14,19 +14,22 @@ public class Hazard : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D otherCollider)
     {
-        StartDeath(collision);
+        StartDeath(otherCollider);
     }
 
-    private void StartDeath(Collider2D collision)
+    ///<summary>
+    ///Plays death sound and starts the player's respawn.
+    ///</summary>
+    private void StartDeath(Collider2D otherCollider)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (otherCollider.gameObject.CompareTag("Player"))
         {
             audioSource.PlayDelayed(audioDelay);
-            PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
+            PlayerCharacter player = otherCollider.GetComponent<PlayerCharacter>();
             player.StartRespawn();
-            //plays death sound and starts the player's respawn.
+            
         }
     }
 }

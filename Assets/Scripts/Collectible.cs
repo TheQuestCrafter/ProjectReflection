@@ -74,10 +74,11 @@ public class Collectible : MonoBehaviour
     {
         PlayerPickup(other);
     }
-
+    /// <summary>
+    /// Allows Player to pick up collectible.
+    /// </summary>
     private void PlayerPickup(Collider2D other)
     {
-        ///Allows Player to pick up collectible.
         if (other.gameObject.CompareTag("Player"))
         {
             if (objectName == necklace)
@@ -120,14 +121,15 @@ public class Collectible : MonoBehaviour
         fillerColor.a = 1;
         collectibleText.color = fillerColor;
     }
-    //ToDo: add lerping
+
+    /// <summary>
+    /// Makes the collectible bounce down and then back up to its starting position.
+    /// </summary>
     private void Bounce()
     {
-        //<summary>Makes the collectible bounce down and then back up to its starting position.</summary>
         if (bounceAmount <= upDownAmount && falling && bounceAmount>0)
         {
             this.gameObject.transform.position = new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y - bounceYAmount);
-            //GameObject.Find(objectName).transform.position = new Vector2(GameObject.Find(objectName).transform.position.x, GameObject.Find(objectName).transform.position.y - bounceYAmount);
             bounceAmount--;
         }
         else if (!falling && bounceAmount < upDownAmount)

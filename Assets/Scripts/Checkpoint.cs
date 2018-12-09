@@ -23,10 +23,12 @@ public class Checkpoint : MonoBehaviour
 
     private void Update()
     {
-        //rotates book for flair
         UpdateRotate();
     }
 
+    /// <summary>
+    /// rotates book for flair
+    /// </summary>
     private void UpdateRotate()
     {
         float rotationSpeed = inactivatedRotationSpeed;
@@ -37,9 +39,11 @@ public class Checkpoint : MonoBehaviour
         transform.Rotate(Vector3.up * rotationSpeed*Time.deltaTime);
     }
 
+    /// <summary>
+    ///Updates sprite if it is activated
+    /// </summary>
     private void UpdateSprite()
     {
-        //updates sprite if it is activated
         Sprite sprite = inactiveSprite;
         if (isActivated == true)
         {
@@ -47,20 +51,25 @@ public class Checkpoint : MonoBehaviour
         }
         spriteRenderer.sprite = sprite;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    /// <summary>
+    ///sets players check point when colliding with player
+    /// </summary>
+    private void OnTriggerEnter2D(Collider2D otherCollider)
     {
-        if (collision.gameObject.CompareTag("Player") && !isActivated)
+        if (otherCollider.gameObject.CompareTag("Player") && !isActivated)
         {
-            //sets players check point when colliding with player
             audioSource.Play();
-            PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
+            PlayerCharacter player = otherCollider.GetComponent<PlayerCharacter>();
             player.SetCurrentCheckpoint(this);
         }
     }
 
+    /// <summary>
+    ///checkpoint changes sprite to open book when updated
+    /// </summary>
     public void SetIsActivated(bool value)
     {
-        //checkpoint changes sprite to open book when updated
         isActivated = value;
         UpdateSprite();
     }

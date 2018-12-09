@@ -39,7 +39,7 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField]
     private float groundRadius = 0.2f, speed;
     [SerializeField]
-    [Tooltip("The vector multiplier that slows the character to halt while dying.")]
+    [Tooltip("The vector divider that slows the character to halt while dying. Always 1 or Greater.")]
     private float deathVector;
     [SerializeField]
     private int jumpNumber;
@@ -66,7 +66,6 @@ public class PlayerCharacter : MonoBehaviour
         //starting game not dead
     }
 
-    // Update is called once per frame
     void Update() {
         
         if (deathTimer>timeToDeath + deathBuffer || deathTimer == 0 || !isDead)
@@ -75,7 +74,7 @@ public class PlayerCharacter : MonoBehaviour
             {
                 Jump();
             }
-            DeathTimerZero();
+            SetDeathTimerZero();
         }
         
         GetMovementInput();
@@ -83,9 +82,11 @@ public class PlayerCharacter : MonoBehaviour
         UpdateAnimationParameters();
     }
 
+    /// <summary>
+    /// Checks what jump the character is on and applies and checks cooldown as well as apply x movement reduction while jumping
+    /// </summary>
     private void JumpCheck()
     {
-        ///Checks what jump the character is on and applies and checks cooldown as well as apply x movement reduction while jumping
         if (jumpNumber > 0)
         {
             speedJumpReducer = 2;
@@ -107,14 +108,16 @@ public class PlayerCharacter : MonoBehaviour
         }
     }
 
-    private void DeathTimerZero()
+    private void SetDeathTimerZero()
     {
         deathTimer = 0;
     }
 
+    /// <summary>
+    /// If death timer has gone up and matches time to death, it will enter the next stage of respawn.
+    /// </summary>
     private void DyingUpdate()
     {
-        //<summary>if death timer has gone up and matches time to death, it will enter the next stage of respawn.</summary>
         anim.SetBool("IsDead", true);
         if (deathTimer > timeToDeath)
         {
@@ -125,23 +128,27 @@ public class PlayerCharacter : MonoBehaviour
         deathTimer += Time.deltaTime;
     }
 
+    /// <summary>
+    /// DeathVector acts to slow the player once they are in the process of dying.
+    /// </summary>
     private void DeathVector()
     {
-        //<summary>DeathVector acts to slow the player once they are in the process of dying.</summary>
         myRigidBody.velocity = myRigidBody.velocity / deathVector;
     }
 
     private void UpdateAnimationParameters()
     {
-        IsOnGround();
+        UpdateIsOnGround();
         UpdateIsFalling();
         anim.SetFloat("Speed", Math.Abs(myRigidBody.velocity.x)); 
         //lets the animator know the speed of player.
     }
 
+    /// <summary>
+    /// Sets tells animator if character is falling or on the ground.
+    /// </summary>
     private void UpdateIsFalling()
     {
-        //<summary>sets tells animator if character is falling or on the ground.</summary>
         if (myRigidBody.velocity.y < 0 && isOnGround == false)
         {
             isFalling = true;
@@ -153,7 +160,7 @@ public class PlayerCharacter : MonoBehaviour
         anim.SetBool("Falling", isFalling);
     }
 
-    private void IsOnGround()
+    private void UpdateIsOnGround()
     {
         anim.SetBool("IsDead", isDead);
         isOnGround = Physics2D.OverlapCircle(groundCheck.position, groundRadius, whatIsGround);
@@ -175,13 +182,15 @@ public class PlayerCharacter : MonoBehaviour
                 Move();//lets player move a fixed amount not dependent on frames
             }
             FlipWhenNeeded();
-            DeathTimerZero();
+            SetDeathTimerZero();
         }
     }
 
+    /// <summary>
+    /// Player flips sprite when going opposite direction of prior movement.
+    /// </summary>
     private void FlipWhenNeeded()
     {
-        //<summary>player flips sprite when going opposite direction of prior movement.</summary>
         if (direction > 0 && !facingRight)
         {
             Flip();
@@ -192,9 +201,11 @@ public class PlayerCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Changes physics material when moving or stopping.
+    /// </summary>
     private void UpdatePhysicsMaterial()
     {
-        //changes physics material when moving or stopping.
         if (Mathf.Abs(direction) > 0)
         {
             playerGroundCollider.sharedMaterial = playerMovingPhysicsMaterial;
@@ -205,26 +216,30 @@ public class PlayerCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets direction of movement from player commands.
+    /// </summary>
     private void GetMovementInput()
     {
-        //<summary>sets direction of movement from player commands</summary>
         direction = Input.GetAxisRaw("Horizontal");
     }
 
+    /// <summary>
+    /// SpeedJumpReducer reduces the player's ability slightly to move on the x-axis if the player is jumping.
+    /// </summary>
     private void Move()
     {
-        //<summary> speedJumpReducer reduces the player's ability slightly to move on the x-axis if the player is jumping.
-        //</summary>
         myRigidBody.AddForce(Vector2.right * direction * acceleration / speedJumpReducer);
         Vector2 clampedVelocity = myRigidBody.velocity;
         clampedVelocity.x = Mathf.Clamp(myRigidBody.velocity.x, -maxSpeed / speedJumpReducer, maxSpeed / speedJumpReducer);
         myRigidBody.velocity = clampedVelocity;
     }
 
+    /// <summary>
+    /// Allows player to jump twice and checks to make sure character can't jump when dead.
+    /// </summary>
     private void Jump()
     {
-        //<summary> Allows player to jump twice and checks to make sure character can't jump when dead
-        //</summary>
         if (jumpNumber == 0 && isOnGround)
         {
             audioSource.Play();
@@ -241,19 +256,23 @@ public class PlayerCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Stage one of respawn
+    /// I have to have the function split into multiple parts due to it needing to constantly update the timer in fixed update
+    /// and to part is to slow the character to a halt and start death animation while the other restarts the player from the 
+    /// last checkpoint
+    /// </summary>
     public void StartRespawn()
     {
-        //<summary>stage one of respawn
-        //I have to have the function split into multiple parts due to it needing to constantly update the timer in fixed update
-        //and to part is to slow the character to a halt and start death animation while the other restarts the player from the 
-        //last checkpoint</summary>
         isDead = true;
-        DeathTimerZero();//Time.realtimeSinceStartup;
+        SetDeathTimerZero();
     }
 
+    /// <summary>
+    /// Last stage of respawn, checks for checkpoint and resets 'is dead' to default of false.
+    /// </summary>
     private void Respawn()
     {
-        //<summary>last stage of respawn, checks for checkpoint and resets 'is dead' to default of false</summary>
         isDead = false;
         if (currentCheckpoint != null)
         {
@@ -267,9 +286,11 @@ public class PlayerCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Creates checkpoint for player.
+    /// </summary>
     public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
-        //<summary>creates checkpoint for player.</summary>
         if (currentCheckpoint != null)
         {
             currentCheckpoint.SetIsActivated(false);
@@ -277,9 +298,12 @@ public class PlayerCharacter : MonoBehaviour
             currentCheckpoint = newCurrentCheckpoint;
             currentCheckpoint.SetIsActivated(true);
     }
+
+    /// <summary>
+    /// Flips player when switching direction in which the player is facing.
+    /// </summary>
     private void Flip()
     {
-        //<summary>flips player when switching direction in which the player is facing.</summary>
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
