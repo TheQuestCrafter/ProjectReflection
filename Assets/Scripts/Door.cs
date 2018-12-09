@@ -7,6 +7,10 @@ public class Door : MonoBehaviour
 {
     [SerializeField]
     private int sceneIndexNumber;
+    [SerializeField]
+    SpriteRenderer spriteRenderer;
+    [SerializeField]
+    Collider2D collider;
     private bool isPlayerInTrigger;
     private AudioSource audioSource;
 
@@ -38,6 +42,8 @@ public class Door : MonoBehaviour
             //allows player to exit current scene and move to next scene
             audioSource.Play();
             SceneManager.LoadScene(sceneIndexNumber);
+            this.spriteRenderer.enabled = false;
+            this.collider.enabled = false;
         }
 	}
 }

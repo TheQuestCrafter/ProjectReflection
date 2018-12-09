@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976a98ae1f5c7474f85ebaa14767f917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioDelay: 0.5
 --- !u!212 &212110993317244120
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -211,8 +212,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 6da6ec3374fa56142947906d117a4f62, type: 3}
-  m_Color: {r: 0.4056604, g: 0, b: 0.055267174, a: 1}
+  m_Sprite: {fileID: 21300000, guid: ccef3de93386456498c7d71c5b03e8eb, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
